@@ -109,7 +109,7 @@
       export PATH="$PATH:/home/jon/.lmstudio/bin"
       # End of LM Studio CLI section
       
-      export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent"    
+      # export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent"    
       [[ -r "/usr/share/z/z.sh" ]] && source /usr/share/z/z.sh
 
       # Created by `pipx` on 2025-05-31 09:16:46
