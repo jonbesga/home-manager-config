@@ -7,31 +7,25 @@
   home.stateVersion = "25.05"; # Please read the comment before changing.
 
   home.packages = with pkgs; [
+    yay
+    git-lfs
     nerd-fonts.aurulent-sans-mono
     bat
-    vim
     jq
-    tmux
-    starship
     direnv
   ];
 
 
-
-  # Home Manager is pretty good at managing dotfiles. The primary way to manage
-  # plain files is through 'home.file'.
-  home.file = {
-    # # Building this configuration will create a copy of 'dotfiles/screenrc' in
-    # # the Nix store. Activating the configuration will then make '~/.screenrc' a
-    # # symlink to the Nix store copy.
-    # ".screenrc".source = dotfiles/screenrc;
-
-    # # You can also set the file content immediately.
-    # ".gradle/gradle.properties".text = ''
-    #   org.gradle.console=verbose
-    #   org.gradle.daemon.idletimeout=3600000
-    # '';
+  programs.vim = {
+    enable = true;
+    extraConfig = ''
+      set expandtab       " Use spaces instead of tabs
+      set tabstop=4       " Number of visual spaces per tab
+      set shiftwidth=4    " Number of spaces to use for autoindent
+      set softtabstop=4   " Number of spaces per tab when editing
+    '';
   };
+
 
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. These will be explicitly sourced when using a
@@ -56,34 +50,26 @@
 
   programs.home-manager.enable = true;
 
-  programs.alacritty = {
-    enable = true;
-    settings = {
-      terminal.shell = {
-        program = "${pkgs.tmux}/bin/tmux";
-        args = ["new-session"];
-      };
-      font = {
-        size = 16.0;
-      };
-      hints = {
-        enabled = [
-          {
-            regex = ''(ipfs:|ipns:|magnet:|mailto:|gemini://|gopher://|https://|http://|news:|file:|git://|ssh:|ftp://)[^\\u0000-\\u001F\\u007F-\\u009F<>"\\s{-}\\^⟨⟩`]+''; 
-            action = "Copy";
-            post_processing = true;
-            mouse.enabled = true;
-          }
-        ];
-      };
-      window = {
-        padding = {
-          x = 10;
-          y = 10;
-        };
-      };
-    };
-  };
+  home.file.".config/alacritty/alacritty.toml".text = ''
+    [terminal.shell]
+    program = "${pkgs.tmux}/bin/tmux"
+    args = ["new-session"]
+  
+    [font]
+    size = 16.0
+  
+    [[hints.enabled]]
+    regex = "(ipfs:|ipns:|magnet:|mailto:|gemini:|gopher:|https:|http:|news:|file:|git:|ssh:|ftp:)[^\u0000-\u001F\u007F-<>\"\\s{-}\\^⟨⟩`]+"
+    action = "Copy"
+    post_processing = true
+  
+    [hints.enabled.mouse]
+    enabled = true
+  
+    [window.padding]
+    x = 10
+    y = 10
+  '';
 
   programs.starship = {
     enable = true;
@@ -107,15 +93,14 @@
 
   programs.bash = {
     enable = true;
+    shellAliases = {
+      cat = "bat";
+      ls = "ls --color=auto";
+    };
     bashrcExtra = ''
       source ${pkgs.tmux}/share/bash-completion/completions/tmux
 
-      HISTFILESIZE=100000
-      HISTSIZE=10000
-
       export EDITOR=vim
-
-      [[ $- != *i* ]] && return
 
       eval "$(direnv hook bash)"
 
@@ -135,6 +120,7 @@
       bind '"\e[B": history-search-forward'
 
       eval "$(starship init bash)"
+      [[ $- != *i* ]] && return
 
     '';
   };
@@ -146,5 +132,11 @@
       set -g mouse on
       set -g history-limit 10000
     '';
+  };
+
+  programs.git = {
+    enable = true;
+    userName = "Jon Besga";
+    userEmail = "jonan.bsg@gmail.com";
   };
 }
