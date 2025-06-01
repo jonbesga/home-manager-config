@@ -23,7 +23,8 @@
       set tabstop=4       " Number of visual spaces per tab
       set shiftwidth=4    " Number of spaces to use for autoindent
       set softtabstop=4   " Number of spaces per tab when editing
-    '';
+	  set paste	    
+	'';
   };
 
 
@@ -107,7 +108,8 @@
       # Added by LM Studio CLI (lms)
       export PATH="$PATH:/home/jon/.lmstudio/bin"
       # End of LM Studio CLI section
-
+      
+      export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent"    
       [[ -r "/usr/share/z/z.sh" ]] && source /usr/share/z/z.sh
 
       # Created by `pipx` on 2025-05-31 09:16:46
@@ -139,4 +141,13 @@
     userName = "Jon Besga";
     userEmail = "jonan.bsg@gmail.com";
   };
+
+  programs.ssh = {
+    enable = true;
+    extraConfig = ''
+      AddKeysToAgent yes
+      IdentityFile ~/.ssh/jon@WITHAM
+    '';
+  };
+  
 }
